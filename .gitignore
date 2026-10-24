@@ -1,2 +1,27 @@
-/backend/target
-/frontend/node_modules
+# IDE and editor files
+.idea/
+*.iml
+.vscode/
+
+# Backend build and local configuration
+backend/target/
+backend/.idea/
+backend/src/main/resources/application.yml
+backend/src/main/resources/application-*.yml
+!backend/src/main/resources/application-example.yml
+
+# Frontend dependencies and build output
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+# Logs and local OS files
+*.log
+*.tmp
+*.temp
+*.swp
+.DS_Store
+Thumbs.db

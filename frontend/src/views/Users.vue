@@ -26,6 +26,9 @@
         <el-table-column prop="username" label="用户名" width="150" />
         <el-table-column prop="email" label="邮箱" width="200" />
         <el-table-column prop="phone" label="手机号" width="150" />
+        <el-table-column prop="role" label="权限" width="110">
+          <template #default="scope"><el-tag :type="scope.row.role === 'ADMIN' ? 'warning' : 'info'">{{ scope.row.role === 'ADMIN' ? '管理员' : '普通用户' }}</el-tag></template>
+        </el-table-column>
         <el-table-column prop="status" label="状态" width="100">
           <template #default="scope">
             <el-tag :type="scope.row.status === 1 ? 'success' : 'danger'">
@@ -79,6 +82,9 @@
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="editForm.phone" />
         </el-form-item>
+        <el-form-item label="权限" prop="role">
+          <el-select v-model="editForm.role"><el-option label="普通用户" value="USER" /><el-option label="管理员" value="ADMIN" /></el-select>
+        </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="editForm.status">
             <el-radio :value="1">启用</el-radio>
@@ -117,6 +123,7 @@ const editForm = reactive({
   username: '',
   email: '',
   phone: '',
+  role: 'USER',
   status: 1
 })
 

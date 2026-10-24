@@ -1,15 +1,17 @@
 <template>
   <el-container class="layout-container">
     <el-header class="header">
-      <div class="logo">用户管理系统</div>
-      <el-menu 
-        mode="horizontal" 
-        :default-active="activeMenu"
-        class="menu"
-        router
-      >
+      <div class="logo">My12306 铁路售票系统</div>
+      <el-menu mode="horizontal" :default-active="activeMenu" class="menu" router>
         <el-menu-item index="/home">首页</el-menu-item>
-        <el-menu-item index="/users">用户管理</el-menu-item>
+        <el-menu-item index="/tickets">车票查询</el-menu-item>
+        <el-menu-item index="/passengers">乘车人</el-menu-item>
+        <el-menu-item index="/orders">我的订单</el-menu-item>
+        <el-menu-item v-if="userStore.userInfo?.role === 'ADMIN'" index="/users">用户管理</el-menu-item>
+        <el-menu-item v-if="userStore.userInfo?.role === 'ADMIN'" index="/admin/stations">地区车站</el-menu-item>
+        <el-menu-item v-if="userStore.userInfo?.role === 'ADMIN'" index="/admin/trains">车次模板</el-menu-item>
+        <el-menu-item v-if="userStore.userInfo?.role === 'ADMIN'" index="/admin/schedules">运行计划</el-menu-item>
+        <el-menu-item v-if="userStore.userInfo?.role === 'ADMIN'" index="/admin/orders">订单管理</el-menu-item>
       </el-menu>
       <div class="user-info">
         <el-dropdown @command="handleCommand">
@@ -39,55 +41,22 @@ import { useUserStore } from '@/stores/user'
 
 const route = useRoute()
 const userStore = useUserStore()
-
 const activeMenu = computed(() => route.path)
 
 onMounted(() => {
-  if (!userStore.userInfo) {
-    userStore.getUserInfo()
-  }
+  if (!userStore.userInfo) userStore.getUserInfo()
 })
 
 const handleCommand = (command) => {
-  if (command === 'logout') {
-    userStore.logout()
-  }
+  if (command === 'logout') userStore.logout()
 }
 </script>
 
 <style scoped>
-.layout-container {
-  height: 100vh;
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  background: #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,.08);
-  padding: 0 20px;
-}
-
-.logo {
-  font-size: 20px;
-  font-weight: bold;
-  color: #409eff;
-  margin-right: 50px;
-}
-
-.menu {
-  flex: 1;
-  border: none;
-}
-
-.user-info {
-  margin-left: 20px;
-}
-
-.el-dropdown-link {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  color: #606266;
-}
+.layout-container { height: 100vh; }
+.header { display: flex; align-items: center; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,.08); padding: 0 20px; }
+.logo { font-size: 20px; font-weight: bold; color: #409eff; margin-right: 50px; }
+.menu { flex: 1; border: none; }
+.user-info { margin-left: 20px; }
+.el-dropdown-link { cursor: pointer; display: flex; align-items: center; color: #606266; }
 </style>
