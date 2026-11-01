@@ -22,3 +22,27 @@ export const getCurrentUser = () => {
     method: 'get'
   })
 }
+
+export const changePassword = (data) => {
+  return request({
+    url: '/users/password',
+    method: 'post',
+    data
+  })
+}
+
+export const sendResetCode = (data) => {
+  return request({
+    url: '/auth/password/reset/code',
+    method: 'post',
+    data
+  })
+}
+
+export const resetPassword = (data) => {
+  return request({
+    url: '/auth/password/reset',
+    method: 'post',
+    data
+  })
+}

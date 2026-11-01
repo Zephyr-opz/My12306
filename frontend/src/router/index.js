@@ -13,6 +13,11 @@ const routes = [
     component: () => import('@/views/Register.vue')
   },
   {
+    path: '/forgot-password',
+    name: 'ForgotPassword',
+    component: () => import('@/views/ForgotPassword.vue')
+  },
+  {
     path: '/',
     name: 'Layout',
     component: () => import('@/views/Layout.vue'),
@@ -91,10 +96,11 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
   const isLoggedIn = userStore.isLoggedIn
+  const publicPaths = ['/login', '/register', '/forgot-password']
   
-  if (to.path !== '/login' && to.path !== '/register' && !isLoggedIn) {
+  if (!publicPaths.includes(to.path) && !isLoggedIn) {
     next('/login')
-  } else if ((to.path === '/login' || to.path === '/register') && isLoggedIn) {
+  } else if (publicPaths.includes(to.path) && isLoggedIn) {
     next('/')
   } else if (to.meta.requiresAdmin) {
     if (!userStore.userInfo) await userStore.getUserInfo()

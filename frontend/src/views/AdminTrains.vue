@@ -107,7 +107,7 @@ const form = reactive({
   trainNumber: '', trainType: 0, trainTag: '0', trainBrand: '0',
   startStation: '', endStation: '', startStationId: null, endStationId: null, startRegion: '', endRegion: '',
   saleStatus: 0, departureTime: '', arrivalTime: '',
-  runStartDate: '2026-10-22', runEndDate: '2026-11-05',
+  runStartDate: '2026-10-22', runEndDate: '2026-11-10',
   stops: [newStop(1, 0), newStop(2, 0)],
   fares: [{ seatType: 2, price: 5000 }],
   carriages: [{ carriageNumber: '01', carriageType: 2, seatCount: 20 }]
@@ -252,7 +252,7 @@ const editTrain = async (row) => {
 }
 const resetForm = () => {
   editingId.value = null
-  Object.assign(form, { trainNumber: '', startStation: '', endStation: '', startStationId: null, endStationId: null, startRegion: '', endRegion: '', departureTime: '', arrivalTime: '', runStartDate: '2026-10-22', runEndDate: '2026-11-05', stops: [newStop(1, 0), newStop(2, 0)], fares: [{ seatType: 2, price: 5000 }], carriages: [{ carriageNumber: '01', carriageType: 2, seatCount: 20 }] })
+  Object.assign(form, { trainNumber: '', startStation: '', endStation: '', startStationId: null, endStationId: null, startRegion: '', endRegion: '', departureTime: '', arrivalTime: '', runStartDate: '2026-10-22', runEndDate: '2026-11-10', stops: [newStop(1, 0), newStop(2, 0)], fares: [{ seatType: 2, price: 5000 }], carriages: [{ carriageNumber: '01', carriageType: 2, seatCount: 20 }] })
   syncStopBoundaries()
 }
 const changePauseStatus = async (planStatus) => {

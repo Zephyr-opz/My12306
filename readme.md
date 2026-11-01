@@ -46,6 +46,8 @@ CREATE DATABASE IF NOT EXISTS my12306
 3. `backend/db/migration/V2__dynamic_seat_inventory.sql`
 4. `backend/db/seed/V1__demo_train_data.sql`（需要演示车次和运行计划时执行）
 
+已有数据库如果已经执行过演示数据脚本，可直接执行 `backend/db/seed/patch_order_times_and_extend_runs_20261029.sql`。该脚本会修正历史订单的运行日期时间、补齐缺少的下单时间，并把模板运行计划扩展到 2026-11-10；不会删除订单、车票或支付数据。
+
 `backend/my12306.sql` 是原始兼容脚本。初始化时不要和 `V0__baseline_schema.sql` 同时执行，避免重复建表。
 
 ## 后端运行

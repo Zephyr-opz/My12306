@@ -7,12 +7,14 @@ import com.cdvtc.demo.mapper.*;
 import jakarta.validation.Valid;
 import com.cdvtc.demo.dto.PurchaseRequest;
 import com.cdvtc.demo.service.SeatAvailabilityCalculator;
+import com.cdvtc.demo.service.ScheduleTimeResolver;
 import com.cdvtc.demo.service.TicketPurchaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -121,12 +123,16 @@ public class TicketController {
             trainInfo.put("departure", fromStop.getDeparture());
             trainInfo.put("arrival", toStop.getArrival());
 
-            // Format times
-            trainInfo.put("departureTime", fromStop.getDepartureTime().format(timeFormat));
-            trainInfo.put("arrivalTime", toStop.getArrivalTime().format(timeFormat));
+            // 经停站时间来自模板，需要换算到当前运行计划日期；跨日车次保留日期偏移。
+            LocalDateTime departureTime = ScheduleTimeResolver.resolve(
+                    schedule.getDepartureDate(), train.getDepartureTime(), fromStop.getDepartureTime());
+            LocalDateTime arrivalTime = ScheduleTimeResolver.resolve(
+                    schedule.getDepartureDate(), train.getDepartureTime(), toStop.getArrivalTime());
+            trainInfo.put("departureTime", departureTime.format(timeFormat));
+            trainInfo.put("arrivalTime", arrivalTime.format(timeFormat));
 
             // Calculate duration
-            Duration duration = Duration.between(fromStop.getDepartureTime(), toStop.getArrivalTime());
+            Duration duration = Duration.between(departureTime, arrivalTime);
             long hours = duration.toHours();
             long minutes = duration.toMinutesPart();
             trainInfo.put("duration", String.format("%02d:%02d", hours, minutes));

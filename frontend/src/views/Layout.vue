@@ -22,6 +22,7 @@
           </span>
           <template #dropdown>
             <el-dropdown-menu>
+              <el-dropdown-item command="password">修改密码</el-dropdown-item>
               <el-dropdown-item command="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
@@ -31,24 +32,86 @@
     <el-main>
       <router-view />
     </el-main>
+
+    <el-dialog v-model="passwordDialogVisible" title="修改密码" width="420px" @closed="resetPasswordForm">
+      <el-form ref="passwordFormRef" :model="passwordForm" :rules="passwordRules" label-width="96px">
+        <el-form-item label="旧密码" prop="oldPassword">
+          <el-input v-model="passwordForm.oldPassword" type="password" show-password autocomplete="current-password" />
+        </el-form-item>
+        <el-form-item label="新密码" prop="newPassword">
+          <el-input v-model="passwordForm.newPassword" type="password" show-password autocomplete="new-password" />
+        </el-form-item>
+        <el-form-item label="确认密码" prop="confirmPassword">
+          <el-input v-model="passwordForm.confirmPassword" type="password" show-password autocomplete="new-password" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="passwordDialogVisible = false">取消</el-button>
+        <el-button type="primary" :loading="passwordSubmitting" @click="submitPasswordChange">确认修改</el-button>
+      </template>
+    </el-dialog>
   </el-container>
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import { ElMessage } from 'element-plus'
+import { changePassword } from '@/api/auth'
 
 const route = useRoute()
 const userStore = useUserStore()
 const activeMenu = computed(() => route.path)
+const passwordDialogVisible = ref(false)
+const passwordSubmitting = ref(false)
+const passwordFormRef = ref()
+const passwordForm = reactive({ oldPassword: '', newPassword: '', confirmPassword: '' })
+const passwordRules = {
+  oldPassword: [{ required: true, message: '请输入旧密码', trigger: 'blur' }],
+  newPassword: [
+    { required: true, message: '请输入新密码', trigger: 'blur' },
+    { min: 6, max: 20, message: '密码长度为6-20个字符', trigger: 'blur' }
+  ],
+  confirmPassword: [
+    { required: true, message: '请再次输入新密码', trigger: 'blur' },
+    {
+      validator: (_rule, value, callback) => {
+        callback(value === passwordForm.newPassword ? undefined : new Error('两次输入的新密码不一致'))
+      },
+      trigger: 'blur'
+    }
+  ]
+}
 
 onMounted(() => {
   if (!userStore.userInfo) userStore.getUserInfo()
 })
 
 const handleCommand = (command) => {
+  if (command === 'password') passwordDialogVisible.value = true
   if (command === 'logout') userStore.logout()
+}
+
+const resetPasswordForm = () => {
+  passwordFormRef.value?.resetFields()
+  passwordForm.oldPassword = ''
+  passwordForm.newPassword = ''
+  passwordForm.confirmPassword = ''
+}
+
+const submitPasswordChange = async () => {
+  if (!passwordFormRef.value) return
+  const valid = await passwordFormRef.value.validate().catch(() => false)
+  if (!valid) return
+  passwordSubmitting.value = true
+  try {
+    await changePassword({ ...passwordForm })
+    ElMessage.success('密码修改成功')
+    passwordDialogVisible.value = false
+  } finally {
+    passwordSubmitting.value = false
+  }
 }
 </script>
 

@@ -97,13 +97,14 @@ public class TicketPurchaseService {
         order.setRidingDate(date);
         order.setDeparture(from.getDeparture());
         order.setArrival(to.getArrival());
-        order.setDepartureTime(from.getDepartureTime());
-        order.setArrivalTime(to.getArrivalTime());
+        order.setDepartureTime(ScheduleTimeResolver.resolve(date, train.getDepartureTime(), from.getDepartureTime()));
+        order.setArrivalTime(ScheduleTimeResolver.resolve(date, train.getDepartureTime(), to.getArrivalTime()));
         order.setTotalAmount(totalAmount);
-        order.setExpireTime(LocalDateTime.now().plusMinutes(30));
+        LocalDateTime orderTime = LocalDateTime.now();
+        order.setExpireTime(orderTime.plusMinutes(30));
         order.setSource(0);
         order.setStatus(0);
-        order.setOrderTime(LocalDateTime.now());
+        order.setOrderTime(orderTime);
         orderMapper.insert(order);
 
         for (PurchaseRequest.PassengerRef ref : request.getPassengers()) {

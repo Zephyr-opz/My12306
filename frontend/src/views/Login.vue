@@ -33,6 +33,8 @@
           </el-button>
         </el-form-item>
         <div class="links">
+          <router-link to="/forgot-password">忘记密码？</router-link>
+          <span class="link-separator">|</span>
           <router-link to="/register">还没有账号？立即注册</router-link>
         </div>
       </el-form>

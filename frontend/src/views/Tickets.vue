@@ -2,7 +2,7 @@
   <div class="ticket-page">
     <el-card class="search-card">
       <template #header><span>车票查询</span></template>
-      <el-alert title="演示数据来自 my12306 数据库，可查询 2026-10-22 至 2026-11-05" type="info" :closable="false" show-icon class="source-alert" />
+      <el-alert title="演示数据来自 my12306 数据库，可查询 2026-10-22 至 2026-11-10" type="info" :closable="false" show-icon class="source-alert" />
       <el-form :inline="true" @submit.prevent="searchTickets">
         <el-form-item label="出发站"><el-select v-model="form.fromStation" filterable placeholder="选择出发站" style="width: 180px"><el-option v-for="station in stations" :key="station.code" :label="station.name" :value="station.code" /></el-select></el-form-item>
         <el-form-item label="到达站"><el-select v-model="form.toStation" filterable placeholder="选择到达站" style="width: 180px"><el-option v-for="station in stations" :key="station.code" :label="station.name" :value="station.code" /></el-select></el-form-item>

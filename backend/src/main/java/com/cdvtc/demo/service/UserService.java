@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cdvtc.demo.dto.LoginRequest;
+import com.cdvtc.demo.dto.ChangePasswordRequest;
 import com.cdvtc.demo.dto.RegisterRequest;
 import com.cdvtc.demo.dto.UserCreateRequest;
 import com.cdvtc.demo.dto.UserUpdateRequest;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 @Service
@@ -60,6 +62,18 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             throw new RuntimeException("用户不存在");
         }
         return convertToVO(user);
+    }
+
+    @Transactional
+    public void changePassword(String username, ChangePasswordRequest request) {
+        User user = findByUsername(username);
+        if (user == null) {
+            throw new RuntimeException("用户不存在");
+        }
+        PasswordChangePolicy.validate(request.getOldPassword(), request.getNewPassword(),
+                request.getConfirmPassword(), passwordEncoder, user.getPassword());
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        updateById(user);
     }
 
     public User findActiveUser(String username) {
